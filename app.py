@@ -2,13 +2,11 @@ import boto3
 from botocore.exceptions import ClientError
 import re
 
-# Connect to AWS DynamoDB
 dynamodb = boto3.resource(
     "dynamodb",
     region_name="us-east-1"
 )
 
-# Select existing database table
 table = dynamodb.Table("CustomerRecords")
 
 
@@ -42,8 +40,7 @@ def add_customer(email, name, phone):
     valid, message = validate_customer(email, name, phone)
 
     if not valid:
-        print("Rejected:", message)
-        return
+        return False, message
 
     email = email.strip().lower()
     name = name.strip()
@@ -59,15 +56,17 @@ def add_customer(email, name, phone):
             ConditionExpression="attribute_not_exists(email)"
         )
 
-        print("Success: Unique customer record saved.")
+        return True, "Unique customer record saved."
 
     except ClientError as error:
 
-        if error.response["Error"]["Code"] == "ConditionalCheckFailedException":
-            print("Rejected: Duplicate email address.")
+        error_code = error.response["Error"]["Code"]
 
-        else:
-            print("Database error:", error)
+        if error_code == "ConditionalCheckFailedException":
+            return False, "Duplicate email address."
+
+        print("Database error:", error)
+        return False, "A database error occurred."
 
 
 print("Customer validation system is ready.")

@@ -1,6 +1,6 @@
 import boto3
-from botocore.exceptions import ClientError
 import re
+from botocore.exceptions import ClientError
 
 dynamodb = boto3.resource(
     "dynamodb",
@@ -35,6 +35,10 @@ def validate_customer(email, name, phone):
     return True, "Customer details are valid."
 
 
+def normalize_phone(phone):
+    return re.sub(r"[\s-]", "", phone)
+
+
 def add_customer(email, name, phone):
 
     valid, message = validate_customer(email, name, phone)
@@ -44,9 +48,34 @@ def add_customer(email, name, phone):
 
     email = email.strip().lower()
     name = name.strip()
-    phone = phone.strip()
+    phone = normalize_phone(phone)
 
     try:
+        # Check whether the email already exists.
+        existing_email = table.get_item(
+            Key={"email": email},
+            ConsistentRead=True
+        )
+
+        if "Item" in existing_email:
+            return False, "Duplicate email address."
+
+        # Check whether the phone number already exists.
+        existing_records = table.scan(
+            FilterExpression="#phone = :phone",
+            ExpressionAttributeNames={
+                "#phone": "phone"
+            },
+            ExpressionAttributeValues={
+                ":phone": phone
+            },
+            ConsistentRead=True
+        )
+
+        if existing_records.get("Items"):
+            return False, "Duplicate phone number."
+
+        # Save the new customer only if both checks pass.
         table.put_item(
             Item={
                 "email": email,

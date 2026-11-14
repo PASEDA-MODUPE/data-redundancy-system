@@ -1,67 +1,70 @@
 # Data Redundancy Removal System
 
-## 1. Project Overview
+## Project Overview
+A cloud-based customer registration system that validates customer details and checks for duplicate email addresses and phone numbers before saving records.
 
-The Data Redundancy Removal System is a cloud-based application designed to validate customer information and prevent duplicate records from being stored in a database.
+## Project Objectives
+- Validate customer information.
+- Prevent duplicate email registrations.
+- Detect existing phone numbers.
+- Store customer records in a cloud database.
+- Improve customer data accuracy.
 
-## 2. Project Objectives
+## Architecture
 
-- Validate customer information before saving.
-- Reject invalid email addresses.
-- Reject invalid phone numbers.
-- Prevent duplicate customer email addresses.
-- Store valid and unique customer records in AWS DynamoDB.
+Customer Registration Website
+        |
+        v
+GitHub Pages
+        |
+        v
+AWS Lambda Function URL
+        |
+        v
+AWS Lambda (Python)
+        |
+        v
+Amazon DynamoDB
 
-## 3. Technologies Used
+## AWS Services Used
 
-- Python: Application programming language.
-- Boto3: AWS SDK for Python.
-- Amazon DynamoDB: Cloud NoSQL database.
-- AWS CloudShell: Environment used to run the application.
+- AWS Lambda: Runs the backend application.
+- Amazon DynamoDB: Stores customer records.
+- AWS IAM: Controls permissions between services.
+- Lambda Function URL: Provides an HTTP endpoint for the website.
 
-## 4. How the System Works
+## Technologies
+- Python
+- JavaScript
+- HTML
+- CSS
+- Boto3
+- Git and GitHub
 
-1. A customer record is submitted.
-2. Python validates the customer's email, name and phone number.
-3. Invalid information is rejected.
-4. The application checks whether the email already exists.
-5. Duplicate records are rejected.
-6. Valid and unique records are saved in DynamoDB.
+## Website
+https://paseda-modupe.github.io/data-redundancy-system/
 
-## 5. AWS Services
+## GitHub Repository
+https://github.com/PASEDA-MODUPE/data-redundancy-system
 
-Amazon DynamoDB stores customer records.
+## Current Features
+- Customer registration form.
+- Email validation.
+- Name validation.
+- Phone number validation.
+- Duplicate email detection.
+- Duplicate phone number detection.
+- Cloud database storage.
+- Website connected to AWS Lambda.
 
-AWS CloudShell provides the terminal environment for running the Python application.
+## Known Limitations
+- Phone-number duplicate detection currently uses a DynamoDB scan and is not an atomic uniqueness guarantee.
+- Matching the same person using different email addresses and different phone numbers is not implemented.
+- Advanced false-positive detection is not implemented.
+- The public Lambda Function URL currently has no authentication. It should be secured before production use.
 
-## 6. Current Test Results
+## Deployment
+The frontend is hosted on GitHub Pages. The backend runs on AWS Lambda and stores customer records in Amazon DynamoDB.
 
-- Valid customer records were saved successfully.
-- Duplicate email addresses were rejected.
-- Invalid email addresses were rejected.
-- Empty customer names were rejected.
-- Invalid phone numbers were rejected.
-- Three valid customer records were confirmed in DynamoDB.
-
-## 7. Current Limitation
-
-The system currently detects duplicates using email addresses. It does not yet identify the same person using different email addresses.
-
-## 8. Future Improvements
-
-- Add stronger duplicate detection.
-- Build a simple user interface.
-- Improve customer identity verification.
-- Add monitoring and reporting.
-
-## 9. Azure Comparison
-
-- Amazon DynamoDB is comparable in purpose to Azure Cosmos DB.
-- AWS CloudShell is comparable to Azure Cloud Shell.
-- Boto3 is comparable to the Azure SDK for Python.
-
-These services have similar purposes but different configurations and APIs.
-
-## 10. Project Status
-
-Working prototype with customer validation, duplicate email prevention and DynamoDB storage.
+## Learning Outcome
+This project provided practical experience with serverless computing, cloud databases, IAM permissions, Python development, API integration, and cloud deployment.

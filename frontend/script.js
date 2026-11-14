@@ -1,7 +1,9 @@
 const customerForm = document.getElementById("customerForm");
 const message = document.getElementById("message");
 
-customerForm.addEventListener("submit", function(event) {
+const API_URL = "https://3zjgzxeyh7ntoljatnku5kaqa40cxztz.lambda-url.us-east-1.on.aws/";
+
+customerForm.addEventListener("submit", async function(event) {
     event.preventDefault();
 
     const name = document.getElementById("name").value.trim();
@@ -14,8 +16,34 @@ customerForm.addEventListener("submit", function(event) {
         return;
     }
 
-    message.textContent = "Registration form submitted successfully. Backend connection is not yet configured.";
-    message.style.color = "green";
+    const button = customerForm.querySelector("button");
+    button.disabled = true;
+    button.textContent = "Registering...";
+    message.textContent = "";
 
-    customerForm.reset();
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, email, phone })
+        });
+
+        const result = await response.json();
+
+        message.textContent = result.message;
+        message.style.color = result.success ? "green" : "red";
+
+        if (result.success) {
+            customerForm.reset();
+        }
+
+    } catch (error) {
+        message.textContent = "Unable to connect to the server. Please try again.";
+        message.style.color = "red";
+    } finally {
+        button.disabled = false;
+        button.textContent = "Register Customer";
+    }
 });
